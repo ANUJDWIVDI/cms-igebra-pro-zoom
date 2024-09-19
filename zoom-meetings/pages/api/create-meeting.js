@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const ZOOM_BASE_URL = 'https://api.zoom.us/v2';
-const ZOOM_JWT_TOKEN = 'YOUR_ZOOM_JWT_TOKEN';  // Replace with your JWT token
+const ZOOM_JWT_TOKEN = 'YOUR_ZOOM_JWT_TOKEN';  
 
 export default async function handler(req, res) {
     if (req.method === 'POST') {
