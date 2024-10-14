@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student - View Meetings</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { max-width: 800px; margin: 50px auto; }
+        h2 { margin-bottom: 20px; }
+        .meeting { padding: 15px; border: 1px solid #ddd; margin-bottom: 10px; border-radius: 5px; }
+        .meeting a { color: blue; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Upcoming Meetings</h2>
+        <div id="upcomingMeetings"></div>
+
+        <h2>Running Meetings</h2>
+        <div id="runningMeetings"></div>
+    </div>
+
+    <script>
+        async function fetchMeetings() {
+            const response = await fetch('/get-meetings');
+            const meetings = await response.json();
+
+            const upcomingMeetingsContainer = document.getElementById('upcomingMeetings');
+            const runningMeetingsContainer = document.getElementById('runningMeetings');
+            const now = new Date();
+
+            meetings.forEach(meeting => {
+                const meetingStartTime = new Date(meeting.startTime);
+                const meetingEndTime = new Date(meetingStartTime.getTime() + meeting.duration * 60000);
+
+                if (meetingStartTime > now) {
+                    // Upcoming Meeting
+                    upcomingMeetingsContainer.innerHTML += `<div class="meeting">
+                        <strong>${meeting.meetingName}</strong><br>
+                        Date: ${new Date(meeting.startTime).toLocaleDateString()}<br>
+                        Time: ${new Date(meeting.startTime).toLocaleTimeString()}<br>
+                    </div>`;
+                } else if (now >= meetingStartTime && now <= meetingEndTime) {
+                    // Running Meeting
+                    runningMeetingsContainer.innerHTML += `<div class="meeting">
+                        <strong>${meeting.meetingName}</strong><br>
+                        <a href="${meeting.joinUrl}" target="_blank">Join Meeting</a><br>
+                    </div>`;
+                }
+            });
+        }
+
+        fetchMeetings();
+    </script>
+</body>
+</html>
